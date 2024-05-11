@@ -1,0 +1,14 @@
+from tictactoeGUI import *
+
+def main():
+    ''' Sets up the main window for the Tic Tac Toe program '''
+
+    mainWindow = Tk()
+    mainWindow.title('Tic Tac Toe')
+    mainWindow.geometry('500x300')
+    mainWindow.resizable(False, False)
+    mainGUI(mainWindow)
+    mainWindow.mainloop()
+
+if __name__ == '__main__':
+    main()
