@@ -1,0 +1,562 @@
+from tkinter import *
+
+class mainGUI:
+    def __init__(self, window):
+        ''' This is the code for the main window, aka the home. This will take you to the main game, stats,
+        or to the instructions'''
+
+        # sets up the main window
+        self.mainWindow = window
+
+        #
+        self.title_frame = Frame(self.mainWindow)
+        self.welcome_label = Label(self.title_frame, text='Welcome to', font=('Comic Sans', 26))
+        self.title_label = Label(self.title_frame, text='Tic Tac Toe!', fg='red', font=('Comic Sans', 26))
+        self.welcome_label.pack()
+        self.title_label.pack()
+        self.title_frame.pack(anchor='center')
+
+        self.play_frame = Frame(self.mainWindow)
+        self.play_button = Button(self.play_frame, text='Play', width=35, height=3, bg='#4287f5', command=self.play)
+        self.play_button.pack()
+        self.play_frame.pack(anchor='center')
+
+        self.stats_frame = Frame(self.mainWindow)
+        self.stats_button = Button(self.stats_frame, text='Stats', width=35, height=3, bg='#4287f5', command=self.stats)
+        self.stats_button.pack()
+        self.stats_frame.pack(anchor='center')
+
+        self.instructions_frame = Frame(self.mainWindow)
+        self.instructions_button = Button(self.instructions_frame, text='Instructions', width=35, height=3, bg='#4287f5', command=self.instructions)
+        self.instructions_button.pack()
+        self.instructions_frame.pack(anchor='center')
+
+    def play(self):
+        self.mainWindow.destroy()
+
+        playWindow = Tk()
+        playWindow.title('Tic Tac Toe')
+        playWindow.geometry('500x600')
+        playWindow.resizable(False, False)
+        playGUI(playWindow)
+        playWindow.mainloop()
+
+    def stats(self):
+        self.mainWindow.destroy()
+
+        statsWindow = Tk()
+        statsWindow.title('Tic Tac Toe')
+        statsWindow.geometry('500x300')
+        statsWindow.resizable(False, False)
+        statsGUI(statsWindow)
+        statsWindow.mainloop()
+
+    def instructions(self):
+        self.mainWindow.destroy()
+
+        instructionsWindow = Tk()
+        instructionsWindow.title('Tic Tac Toe')
+        instructionsWindow.geometry('500x300')
+        instructionsWindow.resizable(False, False)
+        instructionsGUI(instructionsWindow)
+        instructionsWindow.mainloop()
+
+class playGUI:
+
+    def __init__(self, window):
+        self.playWindow = window
+
+        self.top_left_is_clicked_x = False
+        self.top_center_is_clicked_x = False
+        self.top_right_is_clicked_x = False
+        self.left_is_clicked_x = False
+        self.center_is_clicked_x = False
+        self.right_is_clicked_x = False
+        self.bottom_left_is_clicked_x = False
+        self.bottom_center_is_clicked_x = False
+        self.bottom_right_is_clicked_x = False
+        self.top_left_is_clicked_o = False
+        self.top_center_is_clicked_o = False
+        self.top_right_is_clicked_o = False
+        self.left_is_clicked_o = False
+        self.center_is_clicked_o = False
+        self.right_is_clicked_o = False
+        self.bottom_left_is_clicked_o = False
+        self.bottom_center_is_clicked_o = False
+        self.bottom_right_is_clicked_o = False
+        self.amount_checked = 0
+        self.x_turn = True
+
+        self.play_label_frame = Frame(self.playWindow)
+        self.play_title = Label(self.play_label_frame, text='Tic Tac Toe', fg='blue', font=('Comic Sans', 30), anchor='center')
+        self.play_stats = Label(self.play_label_frame, text='X Wins: 0\t\tO Wins: 0', font=('Comic Sans', 20), anchor='center')
+        self.play_title.pack()
+        self.play_stats.pack()
+        self.play_label_frame.pack(anchor='center')
+
+        self.top_playfield_frame = Frame(self.playWindow)
+        self.top_left_button = Button(self.top_playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.top_left_clicked)
+        self.top_center_button = Button(self.top_playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.top_center_clicked)
+        self.top_right_button = Button(self.top_playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.top_right_clicked)
+        self.top_left_button.grid(row=0, column=0)
+        self.top_center_button.grid(row=0, column=1)
+        self.top_right_button.grid(row=0, column=2)
+        self.top_playfield_frame.pack()
+
+        self.playfield_frame = Frame(self.playWindow)
+        self.left_button = Button(self.playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.left_clicked)
+        self.center_button = Button(self.playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.center_clicked)
+        self.right_button = Button(self.playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.right_clicked)
+        self.left_button.grid(row=1, column=0)
+        self.center_button.grid(row=1, column=1)
+        self.right_button.grid(row=1, column=2)
+        self.playfield_frame.pack()
+
+        self.bottom_playfield_frame = Frame(self.playWindow)
+        self.bottom_left_button = Button(self.bottom_playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.bottom_left_clicked)
+        self.bottom_center_button = Button(self.bottom_playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.bottom_center_clicked)
+        self.bottom_right_button = Button(self.bottom_playfield_frame, bg='#4287f5', width=18, height=8, text='', command=self.bottom_right_clicked)
+        self.bottom_left_button.grid(row=2, column=0)
+        self.bottom_center_button.grid(row=2, column=1)
+        self.bottom_right_button.grid(row=2, column=2)
+        self.bottom_playfield_frame.pack()
+
+        self.turn_frame = Frame(self.playWindow)
+        self.turn_label = Label(self.turn_frame, text='X\'s Turn', font=('Comic Sans', 20), anchor='center')
+        self.turn_label.pack()
+        self.turn_frame.pack()
+
+        self.buttons_frame = Frame(self.playWindow)
+        self.home_button = Button(self.buttons_frame, text='Return to Home', width=25, height=3, bg='#4287f5', command=self.home)
+        self.reset_button = Button(self.buttons_frame, text='Restart?', width=25, height=3, bg='#4287f5', command=self.reset)
+        self.reset_button.pack(anchor='w', side='left')
+        self.home_button.pack(anchor='e', side='left')
+        self.buttons_frame.pack()
+
+
+    def top_left_clicked(self):
+        if self.x_turn:
+            self.top_left_button.config(text='X', state='disabled', bg='white')
+            self.top_left_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.top_left_button.config(text='O', state='disabled', bg='white')
+            self.top_left_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def top_center_clicked(self):
+        if self.x_turn:
+            self.top_center_button.config(text='X', state='disabled', bg='white')
+            self.top_center_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.top_center_button.config(text='O', state='disabled', bg='white')
+            self.top_center_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def top_right_clicked(self):
+        if self.x_turn:
+            self.top_right_button.config(text='X', state='disabled', bg='white')
+            self.top_right_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.top_right_button.config(text='O', state='disabled', bg='white')
+            self.top_right_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def left_clicked(self):
+        if self.x_turn:
+            self.left_button.config(text='X', state='disabled', bg='white')
+            self.left_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.left_button.config(text='O', state='disabled', bg='white')
+            self.left_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def center_clicked(self):
+        if self.x_turn:
+            self.center_button.config(text='X', state='disabled', bg='white')
+            self.center_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.center_button.config(text='O', state='disabled', bg='white')
+            self.center_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def right_clicked(self):
+        if self.x_turn:
+            self.right_button.config(text='X', state='disabled', bg='white')
+            self.right_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.right_button.config(text='O', state='disabled', bg='white')
+            self.right_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def bottom_left_clicked(self):
+        if self.x_turn:
+            self.bottom_left_button.config(text='X', state='disabled', bg='white')
+            self.bottom_left_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.bottom_left_button.config(text='O', state='disabled', bg='white')
+            self.bottom_left_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def bottom_center_clicked(self):
+        if self.x_turn:
+            self.bottom_center_button.config(text='X', state='disabled', bg='white')
+            self.bottom_center_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.bottom_center_button.config(text='O', state='disabled', bg='white')
+            self.bottom_center_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def bottom_right_clicked(self):
+        if self.x_turn:
+            self.bottom_right_button.config(text='X', state='disabled', bg='white')
+            self.bottom_right_is_clicked_x = True
+            self.x_turn = False
+            self.turn_label.config(text='O\'s Turn')
+        else:
+            self.bottom_right_button.config(text='O', state='disabled', bg='white')
+            self.bottom_right_is_clicked_o = True
+            self.x_turn = True
+            self.turn_label.config(text='X\'s Turn')
+
+        self.amount_checked += 1
+        self.check_win()
+
+    def home(self):
+        self.playWindow.destroy()
+
+        mainWindow = Tk()
+        mainWindow.title('Tic Tac Toe')
+        mainWindow.geometry('500x300')
+        mainWindow.resizable(False, False)
+        mainGUI(mainWindow)
+        mainWindow.mainloop()
+
+    def reset(self):
+        self.playWindow.destroy()
+
+        playWindow_reset = Tk()
+        playWindow_reset.title('Tic Tac Toe')
+        playWindow_reset.geometry('500x600')
+        playWindow_reset.resizable(False, False)
+        playGUI(playWindow_reset)
+        playWindow_reset.mainloop()
+
+    def check_win(self):
+        if self.x_turn != True:
+            if self.top_left_is_clicked_x and self.top_center_is_clicked_x and self.top_right_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.top_left_is_clicked_x and self.left_is_clicked_x and self.bottom_left_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.top_left_is_clicked_x and self.center_is_clicked_x and self.bottom_right_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.top_center_is_clicked_x and self.center_is_clicked_x and self.bottom_center_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.top_right_is_clicked_x and self.center_is_clicked_x and self.bottom_left_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.top_right_is_clicked_x and self.right_is_clicked_x and self.bottom_right_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.left_is_clicked_x and self.center_is_clicked_x and self.right_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.bottom_left_is_clicked_x and self.bottom_center_is_clicked_x and self.bottom_right_is_clicked_x:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winx()
+            elif self.amount_checked >= 9:
+                self.cat()
+        else:
+            if self.top_left_is_clicked_o and self.top_center_is_clicked_o and self.top_right_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.top_left_is_clicked_o and self.left_is_clicked_o and self.bottom_left_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.top_left_is_clicked_o and self.center_is_clicked_o and self.bottom_right_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.top_center_is_clicked_o and self.center_is_clicked_o and self.bottom_center_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.top_right_is_clicked_o and self.center_is_clicked_o and self.bottom_left_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.top_right_is_clicked_o and self.right_is_clicked_o and self.bottom_right_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.left_is_clicked_o and self.center_is_clicked_o and self.right_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.bottom_left_is_clicked_o and self.bottom_center_is_clicked_o and self.bottom_right_is_clicked_o:
+                self.top_left_button.config(state='disabled')
+                self.top_right_button.config(state='disabled')
+                self.top_center_button.config(state='disabled')
+                self.left_button.config(state='disabled')
+                self.right_button.config(state='disabled')
+                self.center_button.config(state='disabled')
+                self.bottom_left_button.config(state='disabled')
+                self.bottom_center_button.config(state='disabled')
+                self.bottom_right_button.config(state='disabled')
+                self.winy()
+            elif self.amount_checked >= 9:
+                self.cat()
+
+    def winx(self):
+        playWindow_win = Tk()
+        playWindow_win.title('Tic Tac Toe')
+        playWindow_win.geometry('200x100')
+        playWindow_win.resizable(False, False)
+        winX(playWindow_win)
+        playWindow_win.mainloop()
+
+    def winy(self):
+        playWindow_win = Tk()
+        playWindow_win.title('Tic Tac Toe')
+        playWindow_win.geometry('200x100')
+        playWindow_win.resizable(False, False)
+        winY(playWindow_win)
+        playWindow_win.mainloop()
+
+    def cat(self):
+        playWindow_win = Tk()
+        playWindow_win.title('Tic Tac Toe')
+        playWindow_win.geometry('200x100')
+        playWindow_win.resizable(False, False)
+        cat(playWindow_win)
+        playWindow_win.mainloop()
+
+class winX:
+    def __init__(self, window):
+        self.winx_window = window
+
+        self.title_frame = Frame(self.winx_window)
+        self.title_label = Label(self.title_frame, text='X Wins', fg='blue', font=('Comic Sans', 30), anchor='center')
+        self.title_label.pack()
+        self.title_frame.pack()
+
+class winY:
+    def __init__(self, window):
+        self.winy_window = window
+
+        self.title_frame = Frame(self.winy_window)
+        self.title_label = Label(self.title_frame, text='O Wins', fg='blue', font=('Comic Sans', 30), anchor='center')
+        self.title_label.pack()
+        self.title_frame.pack()
+
+class cat:
+    def __init__(self, window):
+        self.cat_window = window
+
+        self.title_frame = Frame(self.cat_window)
+        self.title_label = Label(self.title_frame, text='Cat!', fg='blue', font=('Comic Sans', 30), anchor='center')
+        self.follow_label = Label(self.title_frame, text='It\'s a Draw!', anchor='center')
+        self.title_label.pack()
+        self.follow_label.pack()
+        self.title_frame.pack()
+
+class statsGUI:
+    def __init__(self, window):
+        self.statsWindow = window
+
+class instructionsGUI:
+    def __init__(self, window):
+        self.instructionsWindow = window
+
+        self.instructions_frame = Frame(self.instructionsWindow)
+        self.instructions_title = Label(self.instructions_frame, text='How to Play Tic Tac Toe', fg='blue',
+                                        font=('Comic Sans', 30), anchor='center')
+        self.instructions_help = Label(self.instructions_frame, text='Try to get three in a row for your symbol (X/O)'
+                                                                     '\n\nX always starts first'
+                                                                     '\n\nIf no one gets three in a row it ends in a '
+                                                                     'Cat, \nwhich is another way to say it is a tie or '
+                                                                     'a draw\n', font=('Comic Sans', 15))
+        self.instructions_title.pack()
+        self.instructions_help.pack(side='left')
+        self.instructions_frame.pack()
+
+        self.home_frame = Frame(self.instructionsWindow)
+        self.home_button = Button(self.home_frame, text='Return to Home', width=35, height=3, bg='#4287f5', command=self.home)
+        self.home_button.pack()
+        self.home_frame.pack(anchor='center')
+
+    def home(self):
+        self.instructionsWindow.destroy()
+
+        mainWindow = Tk()
+        mainWindow.title('Tic Tac Toe')
+        mainWindow.geometry('500x300')
+        mainWindow.resizable(False, False)
+        mainGUI(mainWindow)
+        mainWindow.mainloop()
